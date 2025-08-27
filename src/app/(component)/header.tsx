@@ -46,6 +46,7 @@ export default function HeaderComponent() {
                 onClick={() => {
                     router.push("/");
                 }}
+                className="text-xl font-semibold"
             >
                 차단차단
             </button>
@@ -57,9 +58,11 @@ export default function HeaderComponent() {
                 >
                     차량등록
                 </button>
-                <button onClick={handleLogout}>
-                    로그아웃
-                </button>
+                {user && (
+                    <button onClick={handleLogout}>
+                        로그아웃
+                    </button>
+                )}
             </div>
         </div>
     );
