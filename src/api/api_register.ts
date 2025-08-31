@@ -1,9 +1,9 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE!; // 예: http://192.168.0.10:8080
-
+// src/api/api_register.ts
 export type WhitelistCreateReq = {
     plate: string;
     owner?: string;
 };
+
 export type WhitelistCreateRes = {
     ok: boolean;
     id?: number;
@@ -14,17 +14,35 @@ export type WhitelistCreateRes = {
 export async function createWhitelist(
     body: WhitelistCreateReq
 ): Promise<WhitelistCreateRes> {
-    const url = `${API_BASE}/whitelist`;
-    const res = await fetch(`${API_BASE}/whitelist`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-    });
-    const data = await res.json().catch(() => ({}));
+    let res: Response;
+    try {
+        res = await fetch("/api/whitelist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            cache: "no-store",
+        });
+    } catch (e: any) {
+        return {
+            ok: false,
+            error: e?.message || "network_error",
+        };
+    }
 
-    if (!res.ok)
-        throw new Error(
-            data?.error || `HTTP ${res.status}`
-        );
+    let data: any = null;
+    try {
+        data = await res.json();
+    } catch {
+        data = null;
+    }
+
+    if (!res.ok) {
+        return {
+            ok: false,
+            error:
+                (data && (data.error || data.message)) ||
+                `http_${res.status}`,
+        };
+    }
     return data as WhitelistCreateRes;
 }
