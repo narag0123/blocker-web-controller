@@ -15,7 +15,7 @@ export default function AuthPage() {
     useEffect(() => {
         // 이미 로그인 상태면 자동 이동
         const unsub = onAuthStateChanged(auth, (u) => {
-            if (u) router.replace("/auth/register");
+            if (u) router.replace("/");
         });
         return () => unsub();
     }, [router]);
@@ -23,7 +23,8 @@ export default function AuthPage() {
     const signIn = async () => {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
-        router.replace("/auth/register"); // 로그인 직후 이동
+        // router.replace("/auth/register"); // 로그인 직후 이동
+        router.replace("/");
     };
 
     return (
